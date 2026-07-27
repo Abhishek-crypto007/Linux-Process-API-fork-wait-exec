@@ -1,4 +1,4 @@
-# Linux-Process-API-fork-wait-exec-
+# Linux-Process-API-fork-wait-exec
 Ex02-Linux Process API-fork(), wait(), exec()
 # Ex02-OS-Linux-Process API - fork(), wait(), exec()
 Operating systems Lab exercise
@@ -25,6 +25,24 @@ Test the C Program for the desired output.
 
 ## C Program to create new process using Linux API system calls fork() and getpid() , getppid() and to print process ID and parent Process ID using Linux API system calls
 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+    int pid = fork();
+
+    if (pid == 0) { 
+        printf("I am child, my PID is %d\n", getpid()); 
+        printf("My parent PID is: %d\n", getppid()); 
+        sleep(2);  // Keep child alive for verification
+    } else { 
+        printf("I am parent, my PID is %d\n", getpid()); 
+        wait(NULL); 
+    }
+}
+```
 
 
 
@@ -36,12 +54,12 @@ Test the C Program for the desired output.
 
 
 
-
-##OUTPUT
-
+## OUTPUT
 
 
 
+
+<img width="633" height="201" alt="image" src="https://github.com/user-attachments/assets/c405957f-6cea-491d-9d75-c33c55b6dbff" />
 
 
 
@@ -52,6 +70,49 @@ Test the C Program for the desired output.
 
 
 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main() {
+    int status;
+    
+    printf("Running ps with execl\n");
+    if (fork() == 0) {
+        execl("ps", "ps", "-f", NULL);
+        perror("execl failed");
+        exit(1);
+    }
+    wait(&status);
+    
+    if (WIFEXITED(status)) {
+        printf("Child exited with status: %d\n", WEXITSTATUS(status));
+    } else {
+        printf("Child did not exit successfully\n");
+    }
+    
+    printf("Running ps with execlp (without full path)\n");
+    if (fork() == 0) {
+        execlp("ps", "ps", "-f", NULL);
+        perror("execlp failed");
+        exit(1);
+    }
+    wait(&status);
+    
+    if (WIFEXITED(status)) {
+        printf("Child exited for execlp with status: %d\n", WEXITSTATUS(status));
+    } else {
+        printf("Child did not exit successfully\n");
+    }
+    
+    printf("Done.\n");
+    return 0;
+}
+
+```
 
 
 
@@ -72,13 +133,13 @@ Test the C Program for the desired output.
 
 
 
-
-##OUTPUT
-
+## OUTPUT
 
 
 
 
+
+<img width="1905" height="414" alt="image" src="https://github.com/user-attachments/assets/8881abaa-659e-4f35-8f3d-9d6af1c04205" />
 
 
 
